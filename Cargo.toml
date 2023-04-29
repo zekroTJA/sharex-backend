@@ -1,0 +1,9 @@
+[workspace]
+members = [
+    "controller",
+    "handler",
+    "oidc-auth",
+    "persistence",
+    "storage",
+    "vercel-utils"
+]

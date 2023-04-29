@@ -1,0 +1,14 @@
+[package]
+name = "oidc-auth"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+envconfig = "0.10.0"
+jsonwebtoken = "8.3.0"
+optional_struct = "0.3.1"
+reqwest = { version = "0.11.16", default-features = false, features = ["rustls-tls", "json"] }
+serde = { version = "1.0.160", features = ["derive"] }
+

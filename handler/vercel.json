@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "public": false,
+  "regions": ["fra1"],
+
+  "functions": {
+    "api/**/*.rs": {
+      "runtime": "vercel-rust@4.0.0-beta.4"
+    }
+  },
+
+  "rewrites": [{ "source": "/:id", "destination": "/api/images/:id" }]
+}

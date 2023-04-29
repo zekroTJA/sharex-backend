@@ -1,0 +1,38 @@
+[package]
+name = "handler"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+oidc-auth = { path = "../oidc-auth" }
+vercel-utils = { path = "../vercel-utils", features = ["local-auth-bindings"] }
+controller = { path = "../controller" }
+serde_json = "1.0.96"
+tokio = "1.27.0"
+url = "2.3.1"
+vercel_runtime = "0.3.4"
+multipart = "0.18.0"
+sha1 = "0.10.5"
+hex = "0.4.3"
+
+[[bin]]
+name = "auth-callback"
+path = "api/auth/callback.rs"
+
+[[bin]]
+name = "auth-login"
+path = "api/auth/login.rs"
+
+[[bin]]
+name = "auth-me"
+path = "api/auth/me.rs"
+
+[[bin]]
+name = "images"
+path = "api/images.rs"
+
+[[bin]]
+name = "images-id"
+path = "api/images/[id].rs"

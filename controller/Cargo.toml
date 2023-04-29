@@ -1,0 +1,15 @@
+[package]
+name = "controller"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+storage = { path = "../storage" }
+persistence = { path = "../persistence" }
+anyhow = "1.0.70"
+envconfig = "0.10.0"
+xid = "1.0.3"
+chrono = "0.4.24"
+serde = { version = "1.0.160", features = ["derive"] }

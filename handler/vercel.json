@@ -9,5 +9,10 @@
     }
   },
 
-  "rewrites": [{ "source": "/:id", "destination": "/api/images/:id" }]
+  "rewrites": [
+    {
+      "source": "/:id",
+      "destination": "/api/images/:id"
+    }
+  ]
 }

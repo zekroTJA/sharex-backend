@@ -70,7 +70,7 @@ impl Persistence for Postgres {
             r#"SELECT "creator_id", "created_at" FROM "images" WHERE "id" = $1"#.to_string();
 
         if user_id.is_some() {
-            query.push_str(r#" AND "user_id" = $2"#)
+            query.push_str(r#" AND "creator_id" = $2"#)
         }
 
         let mut query_builder = sqlx::query(&query).bind(image_id);

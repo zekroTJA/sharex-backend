@@ -5,20 +5,40 @@ use vercel_runtime::{
     http::{bad_request, internal_server_error, ok},
     *,
 };
-use vercel_utils::{expect, get_auth_claims_from_cookies, method_handlers};
+use vercel_utils::{
+    expect, get_auth_claims_from_cookies, get_query_param_parsed, method_handlers,
+};
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
     run(handler).await
 }
 
-pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
+async fn handler(req: Request) -> Result<Response<Body>, Error> {
     method_handlers!(req,
+        "GET" => handler_get(req).await,
         "POST" => handler_post(req).await,
     )
 }
 
-pub async fn handler_post(req: Request) -> Result<Response<Body>, Error> {
+async fn handler_get(req: Request) -> Result<Response<Body>, Error> {
+    let claims = get_auth_claims_from_cookies!(&req);
+
+    let limit = expect!(get_query_param_parsed(&req, "limit"), 
+        Err(err) => bad_request(format!("invalid param 'limit': {err}")));
+    let offset = expect!(get_query_param_parsed(&req, "offset"), 
+        Err(err) => bad_request(format!("invalid param 'offset': {err}")));
+
+    let controller = expect!(Controller::from_env().await,
+        Err(err) => bad_request(format!("creating controller failed: {err}")));
+
+    let images = expect!(controller.list_images(&claims.sub, limit, offset).await,
+        Err(err) => internal_server_error(format!("failed listing images: {err}")));
+
+    ok(images)
+}
+
+async fn handler_post(req: Request) -> Result<Response<Body>, Error> {
     let claims = get_auth_claims_from_cookies!(&req);
 
     let boundary = req

@@ -71,10 +71,19 @@ impl Controller {
         }
     }
 
-    pub async fn list_images(&self, user_id: &str, limit: i64, offset: i64) -> Result<Vec<Image>> {
+    pub async fn list_images(
+        &self,
+        user_id: &str,
+        limit: Option<i64>,
+        offset: Option<i64>,
+    ) -> Result<Vec<Image>> {
         Ok(self
             .persistence
-            .list_images(user_id, Some(limit), Some(offset))
+            .list_images(
+                user_id,
+                Some(limit.unwrap_or(50)),
+                Some(offset.unwrap_or(0)),
+            )
             .await?
             .iter()
             .cloned()

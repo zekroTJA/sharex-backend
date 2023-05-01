@@ -29,3 +29,17 @@ macro_rules! get_path_param {
             "query params does not contain a value for {} - this should never happen", $key)))
     }};
 }
+
+#[macro_export]
+macro_rules! method_handlers {
+    ( $req:expr, $( $method:literal => $handler:expr ),* $(,)* ) => {
+        match $req.method().to_string().as_str() {
+            $(
+                $method => $handler,
+            )*
+            _ => Ok(Response::builder()
+                .status(StatusCode::METHOD_NOT_ALLOWED)
+                .body(Body::Text("method not allowed".into()))?),
+        }
+    };
+}

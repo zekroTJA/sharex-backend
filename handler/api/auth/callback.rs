@@ -5,7 +5,7 @@ use vercel_runtime::{
     http::{bad_request, internal_server_error},
     *,
 };
-use vercel_utils::expect;
+use vercel_utils::{expect, method_handlers};
 
 const MAX_AGE: i64 = 31 * 24 * 3600;
 
@@ -15,6 +15,12 @@ async fn main() -> Result<(), Error> {
 }
 
 pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
+    method_handlers!(req,
+        "GET" => handler_get(req).await,
+    )
+}
+
+pub async fn handler_get(req: Request) -> Result<Response<Body>, Error> {
     let uri = expect!(Url::parse(&req.uri().to_string()), 
         Err(err) => internal_server_error(format!("failed serializing request uri: {err}")));
     let code = expect!(

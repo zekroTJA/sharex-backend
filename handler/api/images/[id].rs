@@ -4,7 +4,7 @@ use vercel_runtime::{
     http::{bad_request, internal_server_error, not_found},
     *,
 };
-use vercel_utils::{expect, get_path_param, get_query_param};
+use vercel_utils::{expect, get_path_param, get_query_param, method_handlers};
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
@@ -12,12 +12,9 @@ async fn main() -> Result<(), Error> {
 }
 
 pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
-    match req.method().to_string().as_str() {
+    method_handlers!(req,
         "GET" => handler_get(req).await,
-        _ => Ok(Response::builder()
-            .status(StatusCode::METHOD_NOT_ALLOWED)
-            .body(Body::Text("method not allowed".into()))?),
-    }
+    )
 }
 
 pub async fn handler_get(req: Request) -> Result<Response<Body>, Error> {

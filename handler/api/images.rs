@@ -5,7 +5,7 @@ use vercel_runtime::{
     http::{bad_request, internal_server_error, ok},
     *,
 };
-use vercel_utils::{expect, get_auth_claims_from_cookies};
+use vercel_utils::{expect, get_auth_claims_from_cookies, method_handlers};
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
@@ -13,12 +13,9 @@ async fn main() -> Result<(), Error> {
 }
 
 pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
-    match req.method().to_string().as_str() {
+    method_handlers!(req,
         "POST" => handler_post(req).await,
-        _ => Ok(Response::builder()
-            .status(StatusCode::METHOD_NOT_ALLOWED)
-            .body(Body::Text("method not allowed".into()))?),
-    }
+    )
 }
 
 pub async fn handler_post(req: Request) -> Result<Response<Body>, Error> {

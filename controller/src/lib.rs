@@ -5,7 +5,7 @@ pub mod models;
 use chrono::Utc;
 use errs::Result;
 use models::Image;
-use persistence::Persistence;
+use persistence::definitions::Persistence;
 use storage::{
     errors::{StatusError, StatusErrorKind},
     StorageDriver,

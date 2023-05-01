@@ -3,7 +3,7 @@ use crate::{
     Controller,
 };
 use envconfig::Envconfig;
-use persistence::pg::Postgres;
+use persistence::implementations::pg::Postgres;
 use std::str::FromStr;
 use storage::s3driver::{Credentials, Region, S3Driver};
 

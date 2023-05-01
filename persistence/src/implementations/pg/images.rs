@@ -1,21 +1,11 @@
-use crate::{models::Image, Persistence};
+use super::Postgres;
+use crate::{definitions::images::Images, models::Image};
 use anyhow::Result;
 use async_trait::async_trait;
-use sqlx::{PgPool, Pool, Row};
-
-pub struct Postgres {
-    pool: Pool<sqlx::Postgres>,
-}
-
-impl Postgres {
-    pub async fn new(conn_str: &str) -> Result<Self> {
-        let pool = PgPool::connect(conn_str).await?;
-        Ok(Self { pool })
-    }
-}
+use sqlx::Row;
 
 #[async_trait]
-impl Persistence for Postgres {
+impl Images for Postgres {
     async fn insert_image(&self, image: &Image) -> Result<()> {
         sqlx::query(
             r#"INSERT INTO "images" ("id", "creator_id", "created_at") 

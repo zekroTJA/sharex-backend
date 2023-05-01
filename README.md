@@ -41,8 +41,8 @@ Because this project is currently WIP, some features are still missing but plann
 
 - [x] Upload images
 - [x] Retrieve images
-- [ ] List users images
-- [ ] Delete images
+- [x] List users images
+- [x] Delete images
 
 ### Web UI
 

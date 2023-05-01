@@ -4,7 +4,9 @@ use vercel_runtime::{
     http::{bad_request, internal_server_error, not_found},
     *,
 };
-use vercel_utils::{expect, get_path_param, get_query_param, method_handlers};
+use vercel_utils::{
+    expect, get_auth_claims_from_cookies, get_path_param, get_query_param, method_handlers,
+};
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
@@ -14,6 +16,7 @@ async fn main() -> Result<(), Error> {
 pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
     method_handlers!(req,
         "GET" => handler_get(req).await,
+        "DELETE" => handler_delete(req).await,
     )
 }
 
@@ -44,4 +47,25 @@ pub async fn handler_get(req: Request) -> Result<Response<Body>, Error> {
         .header("Cache-Control", "public, max-age=30758400");
 
     Ok(res.body(Body::Binary(data))?)
+}
+
+pub async fn handler_delete(req: Request) -> Result<Response<Body>, Error> {
+    let id = get_path_param!(&req, "id");
+
+    let claims = get_auth_claims_from_cookies!(&req);
+
+    let controller = expect!(Controller::from_env().await,
+        Err(err) => bad_request(format!("creating controller failed: {err}")));
+
+    expect!(
+        controller.delete_image(&claims.sub, &id).await,
+        Err(err) => match err.kind() {
+            ErrorKind::ImageNotFound => not_found("not found"),
+            _ => internal_server_error(format!("failed deleting image: {err}")),
+        }
+    );
+
+    Ok(Response::builder()
+        .status(StatusCode::NO_CONTENT)
+        .body(Body::Empty)?)
 }

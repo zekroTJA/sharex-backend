@@ -70,4 +70,30 @@ impl Controller {
             Ok(v) => Ok(v),
         }
     }
+
+    pub async fn list_images(&self, user_id: &str, limit: i64, offset: i64) -> Result<Vec<Image>> {
+        Ok(self
+            .persistence
+            .list_images(user_id, Some(limit), Some(offset))
+            .await?
+            .iter()
+            .cloned()
+            .map(Image::from)
+            .collect())
+    }
+
+    pub async fn delete_image(&self, user_id: &str, image_id: &str) -> Result<()> {
+        let res = self.persistence.get_image(image_id, Some(user_id)).await?;
+        if res.is_none() {
+            return Err(ErrorKind::ImageNotFound.into());
+        }
+
+        self.storage
+            .delete_object(&self.storage_bucket, image_id)
+            .await?;
+
+        self.persistence.delete_image(image_id).await?;
+
+        Ok(())
+    }
 }
